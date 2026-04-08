@@ -1,0 +1,8 @@
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly    # checks every Monday for newer action versions
+    commit-message:
+      prefix: "ci"
