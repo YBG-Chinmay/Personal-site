@@ -161,44 +161,47 @@ document.querySelectorAll(hoverTargets).forEach((el) => {
 // (Speed controlled via --marquee-dur in CSS)
 
 /* ─────────────────────────────────────────
-   CONTACT CHAT FORM
-   Replace PHONE_NUMBER with your number, e.g. '+12155550123'
-   This opens the native SMS app with your message pre-filled.
+   CONTACT FORM
 ───────────────────────────────────────── */
 (function () {
-  const PHONE_NUMBER = '+1XXXXXXXXXX'; // ← swap in your number
-
-  const form    = document.getElementById('chatForm');
-  const input   = document.getElementById('chatInput');
-  const log     = document.getElementById('chatLog');
+  const form   = document.getElementById('contactForm');
+  const status = document.getElementById('formStatus');
+  const btn    = form?.querySelector('.form-submit');
   if (!form) return;
 
-  function addBubble(text, direction) {
-    const row  = document.createElement('div');
-    row.className = `chat-msg chat-msg--${direction}`;
-    const span = document.createElement('span');
-    span.textContent = text;
-    row.appendChild(span);
-    log.appendChild(row);
-    log.scrollTop = log.scrollHeight;
-  }
-
-  form.addEventListener('submit', (e) => {
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const msg = input.value.trim();
-    if (!msg) return;
 
-    addBubble(msg, 'out');
-    input.value = '';
+    const name    = document.getElementById('formName').value.trim();
+    const contact = document.getElementById('formContact').value.trim();
+    const message = document.getElementById('formMessage').value.trim();
 
-    // Small delay so the bubble appears before the SMS app opens
-    setTimeout(() => {
-      const body = encodeURIComponent(msg);
-      window.location.href = `sms:${PHONE_NUMBER}&body=${body}`;
-    }, 300);
+    if (!name || !contact || !message) return;
 
-    // Reply bubble after a beat
-    setTimeout(() => addBubble("Thanks! I'll text you back soon 🙌", 'in'), 900);
+    btn.disabled          = true;
+    status.textContent    = 'Sending…';
+    status.className      = 'form-status';
+
+    try {
+      const res = await fetch('/api/contact', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ name, contact, message }),
+      });
+
+      if (res.ok) {
+        status.textContent = "Message sent — I'll be in touch soon!";
+        status.className   = 'form-status form-status--ok';
+        form.reset();
+      } else {
+        throw new Error('server');
+      }
+    } catch {
+      status.textContent = 'Something went wrong. Try emailing directly.';
+      status.className   = 'form-status form-status--err';
+    } finally {
+      btn.disabled = false;
+    }
   });
 })();
 

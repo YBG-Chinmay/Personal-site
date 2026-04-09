@@ -173,33 +173,33 @@
         <a href="https://www.instagram.com/chinmay_agrawal19/" target="_blank" rel="noopener">Instagram</a>
       </div>
 
-      <!-- iMessage-style chat -->
-      <div class="chat-wrap reveal-up" style="--delay: 0.1s">
-        <div class="chat-bubble">
-          <div class="chat-header">
-            <div class="chat-avatar">CA</div>
-            <div class="chat-meta">
-              <span class="chat-name">Chinmay Agrawal</span>
-              <span class="chat-status">iMessage</span>
-            </div>
+      <!-- Contact form -->
+      <form class="contact-form reveal-up" id="contactForm" novalidate style="--delay: 0.1s">
+        <div class="form-row">
+          <div class="form-field">
+            <label class="form-label" for="formName">Name</label>
+            <input class="form-input" id="formName" name="name" type="text"
+                   placeholder="Your name" autocomplete="name" required />
           </div>
-          <div class="chat-log" id="chatLog">
-            <div class="chat-msg chat-msg--in">
-              <span>Hey! Drop me a message and I'll get back to you 👋</span>
-            </div>
+          <div class="form-field">
+            <label class="form-label" for="formContact">Email or Phone</label>
+            <input class="form-input" id="formContact" name="contact" type="text"
+                   placeholder="So I can reach back" autocomplete="off" required />
           </div>
-          <form class="chat-compose" id="chatForm" novalidate>
-            <input class="chat-input" id="chatInput" type="text"
-                   placeholder="iMessage" autocomplete="off" maxlength="160" />
-            <button class="chat-send" type="submit" aria-label="Send">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-                <line x1="22" y1="2" x2="11" y2="13"/>
-                <polygon points="22 2 15 22 11 13 2 9 22 2"/>
-              </svg>
-            </button>
-          </form>
         </div>
-      </div>
+        <div class="form-field">
+          <label class="form-label" for="formMessage">Message</label>
+          <textarea class="form-input form-textarea" id="formMessage" name="message"
+                    placeholder="What's on your mind?" rows="4" required></textarea>
+        </div>
+        <div class="form-actions">
+          <button class="form-submit" type="submit">
+            <span>Send Message</span>
+            <span class="form-arrow">→</span>
+          </button>
+          <p class="form-status" id="formStatus" aria-live="polite"></p>
+        </div>
+      </form>
     </div>
   </section>
 
