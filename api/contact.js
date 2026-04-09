@@ -10,10 +10,15 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'All fields are required' });
   }
 
-  const accountSid = process.env.TWILIO_SID;
-  const authToken  = process.env.TWILIO_TOKEN;
-  const fromPhone  = process.env.TWILIO_FROM;  // your Twilio number
-  const toPhone    = process.env.MY_PHONE;      // your personal number
+  // API Key auth — safer than Account SID + Auth Token.
+  // TWILIO_SID is still needed for the URL (Account SID, starts with AC...).
+  // TWILIO_API_KEY is the Key SID (starts with SK...).
+  // TWILIO_API_SECRET is the secret shown once when you create the key.
+  const accountSid  = process.env.TWILIO_SID;
+  const apiKeySid   = process.env.TWILIO_API_KEY;
+  const apiSecret   = process.env.TWILIO_API_SECRET;
+  const fromPhone   = process.env.TWILIO_FROM;  // your Twilio number
+  const toPhone     = process.env.MY_PHONE;     // your personal number
 
   const smsBody = [
     `📬 New site message`,
@@ -32,7 +37,7 @@ export default async function handler(req, res) {
         headers: {
           Authorization:
             'Basic ' +
-            Buffer.from(`${accountSid}:${authToken}`).toString('base64'),
+            Buffer.from(`${apiKeySid}:${apiSecret}`).toString('base64'),
           'Content-Type': 'application/x-www-form-urlencoded',
         },
         body: new URLSearchParams({
