@@ -36,7 +36,7 @@ jobs:
           enablement: true   # auto-enables GitHub Pages if not already on
 
       - name: Upload site
-        uses: actions/upload-pages-artifact@v4
+        uses: actions/upload-pages-artifact@v5
         with:
           path: '.'
 
