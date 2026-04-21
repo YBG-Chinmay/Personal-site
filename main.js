@@ -161,51 +161,6 @@ document.querySelectorAll(hoverTargets).forEach((el) => {
 // (Speed controlled via --marquee-dur in CSS)
 
 /* ─────────────────────────────────────────
-   CONTACT FORM
-───────────────────────────────────────── */
-(function () {
-  const form   = document.getElementById('contactForm');
-  const status = document.getElementById('formStatus');
-  const btn    = form?.querySelector('.form-submit');
-  if (!form) return;
-
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-
-    const name    = document.getElementById('formName').value.trim();
-    const contact = document.getElementById('formContact').value.trim();
-    const message = document.getElementById('formMessage').value.trim();
-
-    if (!name || !contact || !message) return;
-
-    btn.disabled          = true;
-    status.textContent    = 'Sending…';
-    status.className      = 'form-status';
-
-    try {
-      const res = await fetch('/api/contact', {
-        method:  'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body:    JSON.stringify({ name, contact, message }),
-      });
-
-      if (res.ok) {
-        status.textContent = "Message sent — I'll be in touch soon!";
-        status.className   = 'form-status form-status--ok';
-        form.reset();
-      } else {
-        throw new Error('server');
-      }
-    } catch {
-      status.textContent = 'Something went wrong. Try emailing directly.';
-      status.className   = 'form-status form-status--err';
-    } finally {
-      btn.disabled = false;
-    }
-  });
-})();
-
-/* ─────────────────────────────────────────
    SMOOTH ANCHOR SCROLLING
 ───────────────────────────────────────── */
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -220,6 +175,169 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     }
   });
 });
+
+/* ─────────────────────────────────────────
+   ABYSS SHADER (testimonials background)
+───────────────────────────────────────── */
+(function() {
+  const canvas = document.getElementById('abyssCanvas');
+  if (!canvas) return;
+
+  const VS = `attribute vec2 a_pos; void main(){ gl_Position = vec4(a_pos,0.,1.); }`;
+
+  const FS = `
+    precision highp float;
+    uniform vec2 u_res;
+    uniform vec2 u_mouse;
+    uniform float u_time;
+    uniform float u_hold;
+
+    float hash21(vec2 p){
+      vec3 p3=fract(vec3(p.xyx)*.1031);
+      p3+=dot(p3,p3.yzx+33.33);
+      return fract((p3.x+p3.y)*p3.z);
+    }
+    float vnoise(vec2 p){
+      vec2 i=floor(p), f=fract(p);
+      float a=hash21(i), b=hash21(i+vec2(1,0));
+      float c=hash21(i+vec2(0,1)), d=hash21(i+vec2(1,1));
+      vec2 u=f*f*(3.-2.*f);
+      return mix(a,b,u.x)+(c-a)*u.y*(1.-u.x)+(d-b)*u.x*u.y;
+    }
+    float fbm(vec2 p){
+      float s=0., a=.5;
+      for(int i=0;i<6;i++){ s+=a*vnoise(p); p=p*2.03+vec2(1.7,-1.3); a*=.5; }
+      return s;
+    }
+
+    void main(){
+      vec2 uv = gl_FragCoord.xy / u_res.xy;
+      float mn = min(u_res.x, u_res.y);
+      vec2 p = (gl_FragCoord.xy - .5*u_res.xy) / mn;
+      vec2 m = (u_mouse - .5*u_res.xy) / mn;
+
+      float t = u_time * 0.85 * 0.08;
+      vec2 dir = p - m;
+      float dm = length(dir);
+      vec2 pull = -normalize(dir+1e-4) * 0.09 * 0.7 * exp(-dm*2.6) * (0.5 + u_hold*0.25);
+
+      vec2 q = p*1.25 + pull;
+      vec2 w1 = vec2(fbm(q + vec2(0.0, t*2.0)), fbm(q + vec2(5.2, t*2.0+1.3)));
+      q += (w1 - .5) * 1.35;
+      vec2 w2 = vec2(fbm(q*1.7 + vec2(t*3.0, 0.0)), fbm(q*1.7 + vec2(1.7,-t*3.0)));
+      q += (w2 - .5) * 0.85;
+
+      float n = fbm(q*1.45 + t*0.9);
+      float big = fbm(p*0.55 + vec2(t*0.4, -t*0.3));
+      n = n * 0.65 + big * 0.55;
+      n = pow(clamp(n,0.,1.), 1.0/1.15);
+      n = (n - 0.5) * 1.25 + 0.5;
+
+      vec3 deep = vec3(0.006, 0.008, 0.018);
+      vec3 mid = vec3(0.05, 0.08, 0.18);
+      vec3 hi = vec3(0.35, 0.42, 0.60);
+      vec3 warm = vec3(0.65, 0.02, 0.08);
+
+      vec3 col = mix(deep, mid, smoothstep(0.25, 0.75, n));
+      col = mix(col, hi, smoothstep(0.70, 1.05, n));
+
+      float vig = smoothstep(1.15, 0.35, length(p));
+      col *= 0.35 + 0.85*vig;
+
+      col += (hash21(gl_FragCoord.xy + u_time) - 0.5) * 0.018;
+      col = col / (1.0 + col*0.6) * 1.18;
+      gl_FragColor = vec4(col, 1.0);
+    }
+  `;
+
+  const gl = canvas.getContext('webgl', {antialias:false, premultipliedAlpha:false});
+  if (!gl) return;
+
+  function sh(type, src){
+    const s = gl.createShader(type);
+    gl.shaderSource(s, src);
+    gl.compileShader(s);
+    if(!gl.getShaderParameter(s, gl.COMPILE_STATUS)){
+      console.error(gl.getShaderInfoLog(s));
+      return null;
+    }
+    return s;
+  }
+
+  const prog = gl.createProgram();
+  gl.attachShader(prog, sh(gl.VERTEX_SHADER, VS));
+  gl.attachShader(prog, sh(gl.FRAGMENT_SHADER, FS));
+  gl.linkProgram(prog);
+
+  const buf = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, 1,1]), gl.STATIC_DRAW);
+
+  const L = {
+    a_pos: gl.getAttribLocation(prog, 'a_pos'),
+    u_res: gl.getUniformLocation(prog, 'u_res'),
+    u_mouse: gl.getUniformLocation(prog, 'u_mouse'),
+    u_time: gl.getUniformLocation(prog, 'u_time'),
+    u_hold: gl.getUniformLocation(prog, 'u_hold'),
+  };
+
+  const DPR = Math.min(window.devicePixelRatio || 1, 1.75);
+  const state = {
+    mouseX: canvas.clientWidth / 2,
+    mouseY: canvas.clientHeight / 2,
+    time: 0,
+    t0: performance.now(),
+    hold: 0,
+    holdTarget: 0,
+  };
+
+  function resize(){
+    const w = Math.floor(canvas.clientWidth * DPR);
+    const h = Math.floor(canvas.clientHeight * DPR);
+    if(canvas.width !== w || canvas.height !== h){
+      canvas.width = w;
+      canvas.height = h;
+      gl.viewport(0, 0, w, h);
+    }
+  }
+
+  canvas.addEventListener('mousemove', (e) => {
+    const rect = canvas.getBoundingClientRect();
+    state.mouseX = e.clientX - rect.left;
+    state.mouseY = e.clientY - rect.top;
+  });
+
+  canvas.addEventListener('mousedown', () => { state.holdTarget = 1; });
+  canvas.addEventListener('mouseup', () => { state.holdTarget = 0; });
+  canvas.addEventListener('mouseleave', () => { state.holdTarget = 0; });
+
+  window.addEventListener('resize', resize);
+
+  function frame(){
+    const now = performance.now();
+    state.time = (now - state.t0) / 1000;
+    state.hold += (state.holdTarget - state.hold) * 0.12;
+
+    resize();
+
+    gl.useProgram(prog);
+    gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+    gl.enableVertexAttribArray(L.a_pos);
+    gl.vertexAttribPointer(L.a_pos, 2, gl.FLOAT, false, 0, 0);
+
+    gl.uniform2f(L.u_res, gl.drawingBufferWidth, gl.drawingBufferHeight);
+    gl.uniform2f(L.u_mouse, state.mouseX * DPR, (canvas.clientHeight - state.mouseY) * DPR);
+    gl.uniform1f(L.u_time, state.time);
+    gl.uniform1f(L.u_hold, state.hold);
+
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+
+    requestAnimationFrame(frame);
+  }
+
+  resize();
+  requestAnimationFrame(frame);
+})();
 
 /* ─────────────────────────────────────────
    CONTRIBUTION BANNER (canvas)
