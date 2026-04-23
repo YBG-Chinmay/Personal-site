@@ -490,6 +490,9 @@ a { color: inherit; text-decoration: none; }
   flex-direction: column;
   gap: 20px;
   cursor: none;
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.3s var(--ease-out);
 }
 
 .work-card--wide {
