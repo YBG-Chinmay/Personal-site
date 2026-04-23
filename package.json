@@ -4,5 +4,10 @@
   "private": true,
   "engines": {
     "node": "20.x"
+  },
+  "scripts": {
+    "build": "node build.js",
+    "dev": "python3 -m http.server 8000 --directory src",
+    "serve": "python3 -m http.server 8000 --directory dist"
   }
 }
