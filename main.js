@@ -2,7 +2,7 @@
    LENIS SMOOTH SCROLL
 ───────────────────────────────────────── */
 const lenis = new Lenis({
-  duration: 1.3,
+  duration: 0.8,
   easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
   smooth: true,
 });
@@ -108,7 +108,7 @@ gsap.to('.hero-bg', {
     trigger: '.hero',
     start: 'top top',
     end: 'bottom top',
-    scrub: true,
+    scrub: 1,
   },
 });
 
@@ -119,7 +119,7 @@ gsap.to('.hero-orb', {
     trigger: '.hero',
     start: 'top top',
     end: 'bottom top',
-    scrub: true,
+    scrub: 1,
   },
 });
 
@@ -135,14 +135,16 @@ let curX   = 0, curY   = 0;
 window.addEventListener('mousemove', (e) => {
   mouseX = e.clientX;
   mouseY = e.clientY;
-  gsap.to(cursorDot, { x: mouseX, y: mouseY, duration: 0.08, ease: 'none' });
 });
 
 // Lagged ring follows with inertia
 function animateCursor() {
-  curX += (mouseX - curX) * 0.1;
-  curY += (mouseY - curY) * 0.1;
+  curX += (mouseX - curX) * 0.15;
+  curY += (mouseY - curY) * 0.15;
   gsap.set(cursor, { x: curX, y: curY });
+
+  // Dot follows directly
+  gsap.set(cursorDot, { x: mouseX, y: mouseY });
   requestAnimationFrame(animateCursor);
 }
 animateCursor();
