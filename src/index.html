@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chinmay — Portfolio</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet" />
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="css/styles.css" />
+
+  <!-- Lenis smooth scroll -->
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"></script>
+
+  <!-- GSAP + ScrollTrigger -->
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+</head>
+<body>
+
+  <!-- Grain texture overlay -->
+  <div class="grain" aria-hidden="true"></div>
+
+  <!-- Custom cursor -->
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-dot" id="cursorDot"></div>
+
+  <!-- ── NAV ── -->
+  <nav class="nav" id="nav">
+    <span class="nav-logo">Chinmay</span>
+    <ul class="nav-links">
+      <li><a href="#work">Work</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- ── CONTRIBUTION BANNER ── -->
+  <section class="contribution-banner" aria-label="Contribution activity">
+    <canvas id="contribCanvas"></canvas>
+  </section>
+
+  <!-- ── HERO ── -->
+  <section class="hero">
+    <div class="hero-bg">
+      <!-- Uncomment and replace src with your hero image:
+      <img src="assets/images/hero.jpg" alt="" class="hero-img" /> -->
+    </div>
+
+    <!-- Decorative orb -->
+    <div class="hero-orb" aria-hidden="true"></div>
+
+    <div class="hero-content">
+      <div class="hero-text">
+        <p class="hero-eyebrow reveal-text">Student &amp; Developer</p>
+        <h1 class="hero-title">
+          <span class="hero-line" data-index="0">Chinmay</span><br />
+          <em class="hero-line" data-index="1">Agrawal</em>
+        </h1>
+        <p class="hero-sub reveal-fade">Crafting thoughtful digital experiences.</p>
+      </div>
+      <div class="hero-image">
+        <img src="assets/images/zueswithbackground-removebg-preview.png" alt="Chinmay" />
+      </div>
+    </div>
+  </section>
+
+  <!-- ── MARQUEE ── -->
+  <div class="marquee-strip" aria-hidden="true">
+    <div class="marquee-track">
+      <span>"My csmaxxing gymmaxxing GOAT" - Sasan Sedighi</span><span class="dot">·</span>
+      <span>"Chinmay really is big bro, he got us all right" - Neehal Pathak</span><span class="dot">·</span>
+      <span>"This kid is goated" - Alexander Treppiedi</span><span class="dot">·</span>
+      <span>"I love you bro" - Om Chaudhari</span><span class="dot">·</span>
+      <span>"你非常好学生" - Chen Laoshi</span><span class="dot">·</span>
+      <span>"Very nice" - Professor Wickrama</span><span class="dot">·</span>
+      <span>"You know I truly beleive you are a great influence on me" - Jeremiah Rayban</span><span class="dot">·</span>
+      <span>"My csmaxxing gymmaxxing GOAT" - Sasan Sedighi</span><span class="dot">·</span>
+      <span>"Chinmay really is big bro, he got us all right" - Neehal Pathak</span><span class="dot">·</span>
+      <span>"This kid is goated" - Alexander Treppiedi</span><span class="dot">·</span>
+      <span>"I love you bro" - Om Chaudhari</span><span class="dot">·</span>
+      <span>"你非常好学生" - Chen Laoshi</span><span class="dot">·</span>
+    </div>
+  </div>
+
+  <!-- ── INTRO STRIP ── -->
+  <section class="intro-strip">
+    <p class="intro-text reveal-up">
+      I live in the University Courtyard Apartments on 1 Scholar Drive. I am twenty-one years old. I believe in surrouding myself with people who are positive and supportive, but more importantly, honest and genuine. I truly beleive that if you try hard enough, you can achieve anything you want.
+    </p>
+  </section>
+
+  <!-- ── WORK ── -->
+  <section class="work" id="work">
+    <div class="section-label reveal-fade">Selected Work</div>
+    <div class="work-grid">
+
+      <article class="work-card reveal-up" style="--delay: 0s">
+        <div class="work-card-img placeholder-img">
+          <!-- <img src="assets/images/project-1.jpg" alt="Project 1" /> -->
+        </div>
+        <div class="work-card-meta">
+          <span class="work-tag">Engineering</span>
+          <h2 class="work-card-title">Project One</h2>
+          <p class="work-card-desc">A short line describing what this project is about.</p>
+        </div>
+      </article>
+
+      <a href="portfolio-design.html" class="work-card reveal-up" style="--delay: 0.12s">
+        <div class="work-card-img placeholder-img">
+          <img src="assets/images/personalsite_thumbnail.png" alt="This Website Design" />
+        </div>
+        <div class="work-card-meta">
+          <span class="work-tag">Design</span>
+          <h2 class="work-card-title">This Website</h2>
+          <p class="work-card-desc">Exploring the design philosophy, tech stack, and decisions behind this portfolio.</p>
+        </div>
+      </a>
+
+      <article class="work-card work-card--wide reveal-up" style="--delay: 0.06s">
+        <div class="work-card-img placeholder-img">
+          <!-- <img src="assets/images/project-3.jpg" alt="Project 3" /> -->
+        </div>
+        <div class="work-card-meta">
+          <span class="work-tag">Research</span>
+          <h2 class="work-card-title">Project Three</h2>
+          <p class="work-card-desc">A short line describing what this project is about.</p>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ── ABOUT ── -->
+  <section class="about" id="about">
+    <div class="about-inner">
+      <div class="about-image-wrap reveal-up" style="--delay: 0s">
+        <div class="reading-status">
+          <span class="reading-dot"></span>
+          Currently reading <em>The Oracles of Apollo</em> by John Opsopaus
+        </div>
+        <div class="about-img placeholder-img">
+          <img src="assets/images/greekgod.webp" alt="Curious by nature" />
+        </div>
+      </div>
+      <div class="about-text reveal-up" style="--delay: 0.15s">
+        <div class="section-label">About</div>
+        <h2 class="about-heading">
+          Curious by nature,<br /><em>precise by practice.</em>
+        </h2>
+        <p>
+          I am a visionary. My core beliefs are in loyalty, honesty, and discipline. I pay great attention to detail, believe in quick and open communication, and am not afraid to say something, irrespective of what others think of me.
+        </p>
+        <p>
+          Currently based in Newark, Delaware ... soon in Atlanta, Georgia.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── TESTIMONIALS ── -->
+  <section class="testimonials" id="testimonials">
+    <canvas id="abyssCanvas"></canvas>
+    <div class="testimonials-content">
+      <div class="testimonial-card">
+        <p class="testimonial-text">
+          Me and Chinmay went to high school together, so I've known him for about six years now. He's an absolutely phenomenal friend and one of the smartest, most disciplined, and hardest working people I know. The meticulous care and attention with which he approaches every facet of his life — from his health, to his career, to his relationships — has always been deeply influential towards me. I have no doubt that he will be extraordinarily successful in any and all of his future endeavors.
+        </p>
+        <p class="testimonial-author">— Jeremiah Rayban</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CONTACT ── -->
+  <section class="contact" id="contact">
+    <div class="contact-inner">
+      <div class="section-label reveal-fade">Get in Touch</div>
+      <div class="contact-wrapper">
+        <div class="contact-text">
+          <h2 class="contact-heading reveal-up">
+            Let's build<br /><em>something great.</em>
+          </h2>
+        </div>
+        <div class="contact-player reveal-fade">
+          <p class="player-label">(My favorite song btw)</p>
+          <iframe data-testid="embed-iframe" style="border-radius:12px" src="https://open.spotify.com/embed/track/5WQQIDU3HRaMyPkob8mpFb?utm_source=generator&theme=0" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+        </div>
+      </div>
+      <a href="mailto:cagrawal@udel.edu" class="contact-email contact-white reveal-fade">cagrawal@udel.edu</a>
+      <div class="contact-links reveal-fade">
+        <a href="https://www.linkedin.com/in/cagrawal19/" target="_blank" rel="noopener" class="contact-link">
+          <img src="assets/images/linkedin-icon-svgrepo-com.svg" alt="LinkedIn" class="contact-icon" />
+          <span class="contact-white">LinkedIn</span>
+        </a>
+        <a href="https://github.com/YBG-Chinmay" target="_blank" rel="noopener" class="contact-link">
+          <img src="assets/images/github-142-svgrepo-com.svg" alt="GitHub" class="contact-icon" />
+          <span class="contact-white">GitHub</span>
+        </a>
+        <a href="https://www.instagram.com/chinmay_agrawal19/" target="_blank" rel="noopener" class="contact-link">
+          <img src="assets/images/instagram-2-1-logo-svgrepo-com.svg" alt="Instagram" class="contact-icon" />
+          <span class="contact-white">Instagram</span>
+        </a>
+      </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FOOTER ── -->
+  <footer class="footer">
+    <span>© 2026 Chinmay Agrawal</span>
+    <span>Designed &amp; built by me ❤️</span>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>
